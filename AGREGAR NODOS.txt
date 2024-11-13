@@ -1,0 +1,75 @@
+AGREGAR AFICION
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/samuelhgp/-ACTIVIDAD_BD_NEO4J/refs/heads/main/BD/Aficion.csv' AS row
+MERGE (a: Afición {tipo: row.tipo, nombre: row.nombre});
+
+AGREGAR CATEGORIA
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/tu_usuario/tu_repositorio/main/Categorias.csv' AS row
+WITH row WHERE row.idCategoria IS NOT NULL
+MERGE (c:Categoria {
+    idCategoria: toInteger(row.idCategoria),
+    nombre: row.nombre
+});
+AGREGAR CIUDAD
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/samuelhgp/-ACTIVIDAD_BD_NEO4J/refs/heads/main/BD/Ciudad.csv' AS row
+WITH row WHERE row.idCiudad IS NOT NULL
+MERGE (c:Ciudad {
+    idCiudad: toInteger(row.idCiudad),
+    nombre: row.nombre,
+    país: row.país
+});
+
+AGREGAR CLIENTE
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/samuelhgp/-ACTIVIDAD_BD_NEO4J/refs/heads/main/BD/Categoria.csv' AS row
+WITH row WHERE row.idCliente IS NOT NULL
+MERGE (c:Cliente {
+    idCliente: toInteger(row.idCliente),
+    teléfono: row.teléfono,
+    sexo: row.sexo,
+    tieneTitulo: toBoolean(row.tieneTitulo),
+    edad: toInteger(row.edad),
+    nombre: row.nombre
+});
+AGREGAR DIRECCION
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/samuelhgp/-ACTIVIDAD_BD_NEO4J/refs/heads/main/BD/Direccion.csv' AS row
+WITH row WHERE row.id IS NOT NULL
+MERGE (d:Direccion {
+    id: toInteger(row.id),
+    barrio: row.barrio,
+    ubicacion: row.ubicacion,
+    codigoPostal: row.codigoPostal
+});
+AGREGAR ESTUDIO
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/samuelhgp/-ACTIVIDAD_BD_NEO4J/refs/heads/main/BD/Estudio.csv' AS row
+WITH row WHERE row.idEstudio IS NOT NULL
+MERGE (e:Estudio {
+    idEstudio: toInteger(row.idEstudio),
+    título: row.título
+});
+AGREGAR ORDEN
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/samuelhgp/-ACTIVIDAD_BD_NEO4J/refs/heads/main/BD/Orden.csv' AS row
+WITH row WHERE row.idOrden IS NOT NULL
+MERGE (o:Orden {
+    idOrden: toInteger(row.idOrden),
+    monto: toFloat(row.monto),
+    cantidad: toInteger(row.cantidad),
+    fechaOrden: date(row.fechaOrden)
+});
+AGREGAR PRODUCTO
+// Cargar datos de producto desde un archivo CSV y crear nodos de producto
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/samuelhgp/-ACTIVIDAD_BD_NEO4J/refs/heads/main/BD/Producto.csv' AS row
+WITH row WHERE row.idProducto IS NOT NULL
+MERGE (p:Producto {
+    idProducto: toInteger(row.idProducto),
+    precio: toFloat(row.precio),
+    nombre: row.nombre
+});
+AGREGAR PROVEEDOR
+// Cargar datos de proveedor desde un archivo CSV y crear nodos de proveedor
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/samuelhgp/-ACTIVIDAD_BD_NEO4J/refs/heads/main/BD/Proveedor.csv' AS row
+WITH row WHERE row.idProveedor IS NOT NULL
+MERGE (p:Proveedor {
+    idProveedor: toInteger(row.idProveedor),
+    nombre: row.nombre
+});
+
+

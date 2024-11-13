@@ -1,0 +1,61 @@
+CONSULTAS
+
+1.¿Cuáles son los productos más comprados por un cliente?
+MATCH (c:Cliente {idCliente: 1})-[r:HA_CREADO]->(o:Orden)
+WITH o
+ORDER BY o.cantidad DESC
+LIMIT 1
+MATCH (o)-[n:ESTA_COMPUESTA_DE]->(p:Producto)
+RETURN o, p
+
+2.¿Cuáles son los productos más demandados por los clientes de un sexo (hombre/mujer)?
+MATCH (c:Cliente {sexo: "M"})-[:HA_CREADO]->(o:Orden)-[:ESTA_COMPUESTA_DE]->(p:Producto)
+WITH p, SUM(o.cantidad) AS totalDemandado
+ORDER BY totalDemandado DESC
+RETURN p, totalDemandado
+LIMIT 5
+
+3.¿Cuáles son los principales productos comprados por los clientes que tiene un título
+académico?
+MATCH (c:Cliente {tieneTitulo:true})-[:HA_CREADO]->(o:Orden)-[:ESTA_COMPUESTA_DE]->(p:Producto)
+WITH c, p, SUM(o.cantidad) AS totalDemandado
+ORDER BY totalDemandado DESC
+RETURN c.nombre, c.tieneTitulo, p, totalDemandado
+LIMIT 10
+
+4. ¿Cuáles son los productos comprados por los clientes que viven en la misma ciudad
+del proveedor? 
+
+MATCH (c:Cliente)-[:HA_CREADO]->(o:Orden)-[:ESTA_COMPUESTA_DE]->(p:Producto)-[:DISTRIBUIDO_POR]->(pr:Proveedor)-[:SE_UBICA_EN]->(cd:Ciudad)
+MATCH (c)-[:VIVE_EN]->(dr:direccion)-[:ESTA_UBICADA_EN]->(cud:Ciudad)
+where cud= cd
+return p, cd.nombre, cud.nombre
+
+5. Sugerir productos al cliente respecto a los seleccionados en la orden. ¿Qué otros
+productos le podrían interesar al cliente respecto a los seleccionados en la orden?
+En este caso, se debe tener en cuenta los productos relacionados a cada producto,
+no deben existir repetidos.
+
+MATCH (c:Cliente)-[:HA_CREADO]->(o:Orden)-[:ESTA_COMPUESTA_DE]->(p:Producto) 
+WITH DISTINCT p, c
+MATCH (p)-[:ESTA_RELACIONADO]->(products:Producto)
+WHERE NOT (c)-[:HA_CREADO]->(:Orden)-[:ESTA_COMPUESTA_DE]->(products)
+RETURN DISTINCT products
+
+6. Sugerir productos al cliente respecto a los que ha visto. ¿Qué productos le podrían
+interesar al cliente respecto a los vistos? En este caso, solo se deberán tener en
+cuenta los de la misma categoría.
+
+MATCH (c:Cliente)-[:VISUALIZA_UN]->(p:Producto)-[:PERTENECE_A]->(cat:`Categoría`)
+MATCH (p2:Producto)-[:PERTENECE_A]->(cat)
+WHERE NOT (c)-[:VISUALIZA_UN]->(p2) AND p <> p2
+RETURN DISTINCT p2
+
+7. Sugerir productos al cliente respecto a los ordenados por sus vecinos (clientes que
+viven en su misma ciudad) ¿Qué otros productos podrían interesarle a un cliente
+respecto a los ordenados por sus vecinos?
+
+MATCH (c:Cliente)-[:VIVE_EN]->(d:direccion)-[:ESTA_UBICADA_EN]->(cd:Ciudad)<-[:ESTA_UBICADA_EN]-(dr:direccion)<-[:VIVE_EN]-(veci:Cliente)
+MATCH (veci:Cliente)-[:HA_CREADO]->(o:Orden)-[:ESTA_COMPUESTA_DE]->(recomendacion:Producto)
+WHERE NOT (c)-[:HA_CREADO]->(o)-[:ESTA_COMPUESTA_DE]->(recomendacion)
+RETURN DISTINCT recomendacion.nombre AS Recomendacion

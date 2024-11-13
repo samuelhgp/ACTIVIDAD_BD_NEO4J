@@ -1,0 +1,85 @@
+VIVE_EN
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/samuelhgp/ACTIVIDAD_BD_NEO4J/refs/heads/main/NODOS%20Y%20RELACIONES/VIVE_EN.csv' AS row
+WITH row WHERE row.idCliente IS NOT NULL AND row.idDireccion IS NOT NULL
+MATCH (c:Cliente {idCliente: toInteger(row.idCliente)})
+MATCH (d:Direccion {id: toInteger(row.idDireccion)})
+MERGE (c)-[:VIVE_EN]->(d);
+
+
+VISUALIZA_UN
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/samuelhgp/ACTIVIDAD_BD_NEO4J/refs/heads/main/NODOS%20Y%20RELACIONES/VISUALIZA_UN.csv' AS row
+WITH row WHERE row.idCliente IS NOT NULL AND row.idProducto IS NOT NULL
+MATCH (c:Cliente {idCliente: toInteger(row.idCliente)})
+MATCH (p:Producto {idProducto: toInteger(row.idProducto)})
+MERGE (c)-[:VISUALIZA_UN]->(p);
+
+
+TIENE_UNA
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/samuelhgp/ACTIVIDAD_BD_NEO4J/refs/heads/main/NODOS%20Y%20RELACIONES/TIENE_UNA.csv' AS row
+WITH row WHERE row.idCliente IS NOT NULL AND row.nombre IS NOT NULL AND row.tipo IS NOT NULL
+MATCH (c:Cliente {idCliente: toInteger(row.idCliente)})
+MATCH (a:Aficion {nombre: row.nombre, tipo: row.tipo})
+MERGE (c)-[:TIENE_UNA]->(a);
+
+
+TIENE_ESTUDIO_EN
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/samuelhgp/ACTIVIDAD_BD_NEO4J/refs/heads/main/NODOS%20Y%20RELACIONES/TIENE_ESTUDIO_EN.csv' AS row
+WITH row WHERE row.idCliente IS NOT NULL AND row.idEstudio IS NOT NULL
+MATCH (c:Cliente {idCliente: toInteger(row.idCliente)})
+MATCH (e:Estudio {idEstudio: toInteger(row.idEstudio)})
+MERGE (c)-[:TIENE_ESTUDIO_EN]->(e);
+
+
+SE_UBICA_EN
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/samuelhgp/ACTIVIDAD_BD_NEO4J/refs/heads/main/NODOS%20Y%20RELACIONES/SE_UBICA_EN.csv' AS row
+WITH row WHERE row.idProveedor IS NOT NULL AND row.idCiudad IS NOT NULL
+MATCH (p:Proveedor {idProveedor: toInteger(row.idProveedor)})
+MATCH (c:Ciudad {idCiudad: toInteger(row.idCiudad)})
+MERGE (p)-[:SE_UBICA_EN]->(c);
+
+
+PERTENECE_A
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/samuelhgp/ACTIVIDAD_BD_NEO4J/refs/heads/main/NODOS%20Y%20RELACIONES/PERTENECE_A.csv' AS row
+WITH row WHERE row.idProducto IS NOT NULL AND row.idCategoria IS NOT NULL
+MATCH (p:Producto {idProducto: toInteger(row.idProducto)})
+MATCH (c:Categoría {idCategoria: toInteger(row.idCategoria)})
+MERGE (p)-[:PERTENECE_A]->(c);
+
+
+HA_CREADO
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/samuelhgp/ACTIVIDAD_BD_NEO4J/refs/heads/main/NODOS%20Y%20RELACIONES/HA_CREADO.csv' AS row
+WITH row WHERE row.idCliente IS NOT NULL AND row.idOrden IS NOT NULL
+MATCH (c:Cliente {idCliente: toInteger(row.idCliente)})
+MATCH (o:Orden {idOrden: toInteger(row.idOrden)})
+MERGE (c)-[:HA_CREADO]->(o);
+
+
+ESTA_UBICADA_EN
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/samuelhgp/ACTIVIDAD_BD_NEO4J/refs/heads/main/NODOS%20Y%20RELACIONES/ESTA_UBICADA_EN.csv' AS row
+WITH row WHERE row.id IS NOT NULL AND row.idCiudad IS NOT NULL
+MATCH (d:Direccion {id: toInteger(row.id)})
+MATCH (c:Ciudad {idCiudad: toInteger(row.idCiudad)})
+MERGE (d)-[:ESTA_UBICADA_EN]->(c);
+
+
+ESTA_COMPUESTA_DE
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/samuelhgp/ACTIVIDAD_BD_NEO4J/refs/heads/main/NODOS%20Y%20RELACIONES/ESTA_COMPUESTA_DE.csv' AS row
+WITH row WHERE row.idOrden IS NOT NULL AND row.idProducto IS NOT NULL
+MATCH (o:Orden {idOrden: toInteger(row.idOrden)})
+MATCH (p:Producto {idProducto: toInteger(row.idProducto)})
+MERGE (o)-[:ESTA_COMPUESTA_DE]->(p);
+
+ESTA_RELACIONADO
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/samuelhgp/ACTIVIDAD_BD_NEO4J/refs/heads/main/NODOS%20Y%20RELACIONES/ESTA_RELACIONADO.csv' AS row
+WITH row WHERE row.idProducto1 IS NOT NULL AND row.idProducto2 IS NOT NULL
+MATCH (p1:Producto {idProducto: toInteger(row.idProducto1)})
+MATCH (p2:Producto {idProducto: toInteger(row.idProducto2)})
+MERGE (p1)-[:ESTA_RELACIONADO]->(p2);
+
+
+DISTRIBUIDO_POR
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/samuelhgp/ACTIVIDAD_BD_NEO4J/refs/heads/main/NODOS%20Y%20RELACIONES/DISTRIBUIDO_POR.csv' AS row
+WITH row WHERE row.idProducto IS NOT NULL AND row.idProveedor IS NOT NULL
+MATCH (p:Producto {idProducto: toInteger(row.idProducto)})
+MATCH (pr:Proveedor {idProveedor: toInteger(row.idProveedor)})
+MERGE (p)-[:DISTRIBUIDO_POR]->(pr);
